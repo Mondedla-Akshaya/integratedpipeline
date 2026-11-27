@@ -1,0 +1,362 @@
+DevOps Lab -- Jenkins Pipelines and Freestyle Projects
+This file contains simple, practical steps and code for the Jenkins Pipeline and Freestyle experiments.
+Before starting
+Open Jenkins in your browser: http://localhost:8080.
+Sign in.
+For each experiment, create a separate Jenkins job using the name suggested below.
+After saving, click Build Now (or Build with Parameters for the parameterized job).
+Open the build number and select Console Output to see the result.
+Important: Choose the correct build step
+Pipeline experiments: choose New Item → Pipeline and paste the code into Pipeline → Definition → Pipeline script.
+Freestyle experiments on Windows: choose Add build step → Execute Windows batch command.
+Freestyle experiments on Linux: choose Add build step → Execute shell and use the Linux code supplied below.
+The commands depend on the computer where the Jenkins agent runs, not just the computer where you open the browser.
+Part A -- Jenkins Pipeline Experiments
+Experiment 2 -- Create a simple Jenkins Pipeline
+Steps
+Jenkins dashboard → New Item.
+Enter Simple-Pipeline.
+Select Pipeline → OK.
+Scroll to the Pipeline section.
+Set Definition to Pipeline script.
+Paste this code into the Script box.
+Click Save → Build Now.
+Open the build number → Console Output.
+Pipeline code
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello Jenkins'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building the project'
+            }
+        }
+
+        stage('Finish') {
+            steps {
+                echo 'Pipeline completed successfully'
+            }
+        }
+    }
+}
+Expected result
+The Console Output displays the three messages: Hello Jenkins, Building the project, and Pipeline completed successfully.
+Experiment 3 -- Jenkins pipeline for workspace file handling
+Steps
+Create a new item named Workspace-File-Pipeline.
+Select Pipeline → OK.
+In the Pipeline section, choose Pipeline script.
+Paste the code below.
+Click Save → Build Now.
+Open Console Output to check the messages and file listing.
+Pipeline code -- Windows agent
+pipeline {
+    agent any
+
+    stages {
+        stage('Create File') {
+            steps {
+                writeFile file: 'hello.txt', text: 'Hello from Jenkins workspace'
+                echo 'File created'
+            }
+        }
+
+        stage('Read File') {
+            steps {
+                script {
+                    def content = readFile('hello.txt')
+                    echo "File content: ${content}"
+                }
+            }
+        }
+
+        stage('List Files') {
+            steps {
+                bat 'dir'
+            }
+        }
+    }
+}
+Pipeline code -- Linux agent
+Use this version instead if the Jenkins agent runs Linux. The only platform-specific command here is sh 'ls'.
+pipeline {
+    agent any
+
+    stages {
+        stage('Create File') {
+            steps {
+                writeFile file: 'hello.txt', text: 'Hello from Jenkins workspace'
+                echo 'File created'
+            }
+        }
+
+        stage('Read File') {
+            steps {
+                script {
+                    def content = readFile('hello.txt')
+                    echo "File content: ${content}"
+                }
+            }
+        }
+
+        stage('List Files') {
+            steps {
+                sh 'ls'
+            }
+        }
+    }
+}
+Expected result
+Jenkins creates hello.txt in the job workspace, reads its contents, and lists the workspace files. The Console Output should show Hello from Jenkins workspace and hello.txt.
+Experiment 5 -- Parameterized Jenkins Pipeline
+Steps
+Create a new item named Parameterized-Pipeline.
+Select Pipeline → OK.
+In the Pipeline section, select Pipeline script.
+Paste the code below.
+Click Save.
+Select Build with Parameters.
+Enter a name and click Build.
+Open Console Output.
+Pipeline code
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'USERNAME', defaultValue: 'Student',
+               description: 'Enter your name')
+    }
+
+    stages {
+        stage('Welcome') {
+            steps {
+                echo "Welcome ${params.USERNAME}"
+            }
+        }
+    }
+}
+Expected result
+If you enter Ravi, the output displays Welcome Ravi. The output changes according to the name entered.
+Experiment 7 -- Scheduled Jenkins Pipeline
+Steps
+Create a new item named Scheduled-Pipeline.
+Select Pipeline → OK.
+In the Pipeline section, select Pipeline script.
+Paste the code below.
+Click Save.
+Jenkins will schedule the job to run approximately every five minutes.
+Check Build History and open a build's Console Output.
+Pipeline code
+pipeline {
+    agent any
+
+    triggers {
+        cron('H/5 * * * *')
+    }
+
+    stages {
+        stage('Scheduled Task') {
+            steps {
+                echo 'Hello Jenkins'
+                echo 'This is a scheduled pipeline'
+            }
+        }
+    }
+}
+Expected result
+Jenkins automatically starts a new build about every five minutes. H/5 means Jenkins chooses a consistent minute pattern in five-minute intervals; it may not run at exactly 00, 05, 10, etc.
+Experiment 9 -- Jenkins pipeline with multiple stages
+Steps
+Create a new item named Multi-Stage-Pipeline.
+Select Pipeline → OK.
+In the Pipeline section, select Pipeline script.
+Paste the code below.
+Click Save → Build Now.
+Open Console Output. You can also view the stage results in the Pipeline Stage View if available.
+Pipeline code
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the application'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Testing the application'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application'
+            }
+        }
+    }
+}
+Expected result
+The stages run in this order: Build → Test → Deploy.
+Part B -- Jenkins Freestyle Experiments
+Common steps for Freestyle jobs
+Jenkins dashboard → New Item.
+Enter the job name.
+Select Freestyle project → OK.
+Open the Build Steps section.
+Click Add build step.
+On Windows, select Execute Windows batch command. On Linux, select Execute shell.
+Paste the matching code below.
+Click Save → Build Now.
+Open the build number → Console Output.
+For Experiments 14 and 15, follow the additional configuration steps given under those experiments.
+Experiment 11 -- Freestyle job to create and copy files
+Windows code
+Paste this into Build Steps → Execute Windows batch command.
+echo Hello Jenkins > file1.txt
+copy file1.txt file2.txt
+echo Files created and copied successfully
+dir
+Linux code
+Paste this into Build Steps → Execute shell.
+echo "Hello Jenkins" > file1.txt
+cp file1.txt file2.txt
+echo "Files created and copied successfully"
+ls
+Expected result
+The workspace contains file1.txt and file2.txt. The Console Output displays the success message and file names.
+Experiment 12 -- Continuous Integration and Continuous Delivery (CI/CD) using Jenkins
+This is a simple lab demonstration of the CI/CD stages. The echo commands show the stages in the Console Output; they do not perform a real deployment.
+Step 1 -- Create a GitHub repository
+Sign in to GitHub.
+Create a repository named CICD-Demo.
+Add a file named index.html with this content:
+<html>
+<body>
+    <h1>Hello Jenkins CI/CD</h1>
+</body>
+</html>
+Commit the file to the repository.
+Copy the repository URL.
+Step 2 -- Create the Jenkins Freestyle job
+Jenkins dashboard → New Item.
+Enter CI-CD-Demo.
+Select Freestyle project → OK.
+Step 3 -- Connect GitHub
+In Source Code Management, select Git.
+Paste the GitHub repository URL.
+Set the branch to */main (use */master if your repository's default branch is master).
+Step 4 -- Add the build commands
+Under Build Steps, select Execute Windows batch command and paste:
+echo Starting CI/CD Process
+echo Building the application
+echo Testing the application
+echo Deploying the application
+echo CI/CD completed successfully
+For a Linux Jenkins agent, select Execute shell and paste:
+echo "Starting CI/CD Process"
+echo "Building the application"
+echo "Testing the application"
+echo "Deploying the application"
+echo "CI/CD completed successfully"
+Step 5 -- Run the job
+Click Save.
+Click Build Now.
+Open Console Output.
+Expected result
+Jenkins checks out the GitHub source code and prints the Build, Test, and Deploy messages. This is a demonstration only. A real CI/CD setup needs actual build/test commands and a deployment target. To trigger builds automatically after GitHub pushes, configure a webhook or Jenkins polling trigger.
+Experiment 13 -- Hello World Freestyle job and Jenkins environment variables
+Windows code
+echo Hello World
+echo Job Name: %JOB_NAME%
+echo Build Number: %BUILD_NUMBER%
+echo Workspace: %WORKSPACE%
+echo Jenkins Home: %JENKINS_HOME%
+Linux code
+echo "Hello World"
+echo "Job Name: $JOB_NAME"
+echo "Build Number: $BUILD_NUMBER"
+echo "Workspace: $WORKSPACE"
+echo "Jenkins Home: $JENKINS_HOME"
+Steps
+Create a Freestyle project named HelloWorld.
+Go to Build Steps.
+Select the correct command type for the Jenkins agent (Windows batch or Linux shell).
+Paste the matching code.
+Click Save → Build Now.
+Open Console Output.
+Expected result
+The output displays Hello World and the job name, build number, workspace path, and Jenkins home path.
+Meaning of the variables
+JOB_NAME -- name of the Jenkins job.
+BUILD_NUMBER -- current build number.
+WORKSPACE -- folder used by the job.
+JENKINS_HOME -- Jenkins data folder.
+Experiment 14 -- Parameterized Freestyle project
+Steps
+Create a Freestyle project named Parameterized-Freestyle.
+In General, select This project is parameterized.
+Click Add Parameter → String Parameter.
+Set:
+Name: STUDENT_NAME
+Default Value: Student
+Description: Enter your name
+Under Build Steps, select the correct command type.
+Windows code
+echo Welcome to Jenkins
+echo Student Name: %STUDENT_NAME%
+echo Parameterized Build Completed
+Linux code
+echo "Welcome to Jenkins"
+echo "Student Name: $STUDENT_NAME"
+echo "Parameterized Build Completed"
+Run the job
+Click Save.
+Click Build with Parameters.
+Enter your name.
+Click Build.
+Open Console Output.
+Expected result
+The Console Output displays the name entered in the parameter.
+Experiment 15 -- Scheduled Freestyle project
+Steps
+Create a Freestyle project named Scheduled-Freestyle.
+In Build Triggers, select Build periodically.
+Enter this schedule:
+H/5 * * * *
+Under Build Steps, select the correct command type.
+Windows code
+echo Hello Jenkins
+echo This is a scheduled build
+echo Scheduled Task Completed
+Linux code
+echo "Hello Jenkins"
+echo "This is a scheduled build"
+echo "Scheduled Task Completed"
+Finish
+Click Save.
+Jenkins runs the job approximately every five minutes.
+Check Build History and Console Output.
+Expected result
+A new build is started automatically at the scheduled interval and displays the three messages.
+Quick revision -- Where does each code go?
+Job type                            Where to paste the code
+Pipeline                            New Item → Pipeline → Pipeline section → Pipeline script
+Freestyle on Windows                Configure → Build Steps → Execute Windows batch command
+Freestyle on Linux                  Configure → Build Steps → Execute shell
+Important notes
+Each experiment should be created as a separate Jenkins job.
+A Pipeline script is Groovy-based Jenkins Pipeline code. Do not paste it into a Windows batch or Linux shell build step.
+Windows commands such as copy, dir, and %VARIABLE% are not Linux commands.
+Linux commands such as cp, ls, and $VARIABLE are not Windows batch syntax.
+If a job fails, open Console Output and read the first error message.
+Scheduled jobs run only while Jenkins is running and the job is enabled.
+For the CI/CD demonstration, the printed messages represent stages; they are not a real build, test, or deployment.
