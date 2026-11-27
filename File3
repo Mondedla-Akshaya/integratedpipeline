@@ -1,0 +1,164 @@
+DevOps Lab Practicals
+Experiment 1 – Student Event Registration Form
+Aim
+To create a simple event registration form using HTML.
+Step 1: Create a folder
+Open Command Prompt or Git Bash and type:
+mkdir RegistrationForm
+cd RegistrationForm
+Step 2: Create the HTML file
+In Windows Command Prompt:
+notepad registration.html
+In Git Bash / Ubuntu:
+nano registration.html
+Step 3: Write this complete code
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Registration Form</title>
+</head>
+<body>
+    <h2>Event Registration Form</h2>
+
+    <form>
+        <label>Full Name:</label>
+        <input type="text" name="name" required>
+        <br><br>
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+        <br><br>
+
+        <label>Phone Number:</label>
+        <input type="tel" name="phone" required>
+        <br><br>
+
+        <label>Gender:</label>
+        <input type="radio" name="gender" value="Male"> Male
+        <input type="radio" name="gender" value="Female"> Female
+        <br><br>
+
+        <label>Department:</label>
+        <select name="department">
+            <option>CSE</option>
+            <option>IT</option>
+            <option>ECE</option>
+            <option>EEE</option>
+            <option>MECH</option>
+        </select>
+        <br><br>
+
+        <label>Event:</label>
+        <select name="event">
+            <option>Technical</option>
+            <option>Cultural</option>
+            <option>Sports</option>
+        </select>
+        <br><br>
+
+        <input type="submit" value="Register">
+        <input type="reset" value="Clear">
+    </form>
+</body>
+</html>
+Save the file.
+Step 4: Run and view the form
+Open the RegistrationForm folder and double-click registration.html. It opens in a web browser. Enter details and click Register.
+Expected result: The Student Event Registration Form appears in the browser with name, email, phone, gender, department, event, Register and Clear fields.
+Note: This is a basic HTML form. It displays the form and performs browser-side required-field checks; it does not save registrations to a database.
+Result
+The event registration form was created successfully using HTML.
+Viva Questions
+What is HTML? HTML stands for HyperText Markup Language. It is used to create web pages.
+What is a form? A form collects information from users.
+What is the use of <form>? It defines an HTML form.
+What is the use of <input>? It creates input fields.
+What is the use of type="radio"? It allows the user to select one option from a group.
+What is the use of <select>? It creates a drop-down list.
+What is the use of required? It makes a field compulsory.
+What is the use of submit? It submits the form.
+Experiment 8 – Create a Code Snippets Library Using GitHub
+Aim
+To create a GitHub repository and upload sample code files using Git commands.
+Step 1: Create a repository on GitHub
+Open https://github.com and sign in.
+Click New repository.
+Enter repository name: Code-Snippets-Library.
+Select Public.
+Click Create repository.
+Step 2: Clone the repository
+Open Git Bash or Ubuntu Terminal. Replace USERNAME with your GitHub username.
+git clone https://github.com/USERNAME/Code-Snippets-Library.git
+cd Code-Snippets-Library
+Step 3: Create the Python file
+nano hello.py
+Write:
+print("Hello World")
+print("Welcome to Code Snippets Library")
+Save in nano: press Ctrl + O, press Enter, then Ctrl + X.
+Step 4: Create the Java file
+nano Hello.java
+Write:
+class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+        System.out.println("Java Code Snippet");
+    }
+}
+Save and exit nano.
+Step 5: Create the HTML file
+nano index.html
+Write:
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Code Snippets</title>
+</head>
+<body>
+    <h2>Hello World</h2>
+    <p>Welcome to Code Snippets Library</p>
+</body>
+</html>
+Save and exit nano.
+Step 6: Create README file
+nano README.md
+Write:
+# Code Snippets Library
+
+This repository contains simple code examples.
+
+## Files
+- hello.py – Python Hello World program
+- Hello.java – Java Hello World program
+- index.html – Basic HTML page
+Save and exit nano.
+Step 7: Add, commit and push files
+Run these commands from inside the Code-Snippets-Library folder:
+git status
+git add .
+git commit -m "Added code snippets"
+git push origin main
+If your repository's branch is named master, use:
+git push origin master
+Step 8: Verify
+Refresh your GitHub repository page. You should see:
+hello.py
+Hello.java
+index.html
+README.md
+Result
+A Code Snippets Library repository was created and the sample code files were uploaded to GitHub using Git.
+Viva Questions
+What is Git? Git is a version control system used to track changes in files.
+What is GitHub? GitHub is an online platform for hosting Git repositories.
+What is a repository? A repository is a place where project files and their history are stored.
+What does git clone do? It copies a remote repository to the local computer.
+What does git add . do? It stages all changes in the current folder.
+What does git commit do? It saves the staged changes in the local repository.
+What does git push do? It uploads local commits to the remote repository.
+What is README.md? It is a Markdown file that explains the project.
+What is the difference between Git and GitHub? Git is the version control tool; GitHub hosts Git repositories online.
+Important command reminder
+For the registration form, create and edit registration.html, then open it in a browser.
+For the code snippets library, type Git commands in Git Bash or Ubuntu Terminal, not inside the HTML/Python/Java files.
+Replace USERNAME in the clone URL with your actual GitHub username.
