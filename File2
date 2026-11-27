@@ -1,0 +1,394 @@
+DevOps Lab Experiments 17--28
+Docker, Kubernetes and Selenium --- Step-by-Step Commands and Programs
+Command environment: These instructions use Windows Command Prompt (CMD). Open CMD for the commands and keep Docker Desktop running for Docker and Kubernetes experiments.
+Important before starting - Start Docker Desktop and wait until Docker Engine shows Running before running Docker commands. - For Kubernetes experiments, enable Kubernetes in Docker Desktop Settings → Kubernetes, then wait until the cluster is ready. - Commands using %cd% are for Windows CMD, not PowerShell. - When a command opens Notepad, paste the given code, save the file with the exact filename, and close Notepad. - If a folder already exists, use cd FolderName instead of creating it again. - Docker commands may need docker to be replaced with sudo docker on Linux if your user does not have Docker permissions.
+Experiment 17 -- Execute Basic Docker Commands
+Aim: To execute basic Docker commands and manage Docker images and containers.
+Steps
+Start Docker Desktop and wait until Docker Engine is running.
+Open Command Prompt.
+Check Docker installation:
+docker --version
+Display Docker information:
+docker info
+Download the hello-world image:
+docker pull hello-world
+List downloaded images:
+docker images
+Run a container:
+docker run hello-world
+List running containers:
+docker ps
+List all containers, including stopped ones:
+docker ps -a
+Run an Ubuntu container:
+docker run -it ubuntu bash
+Inside the container, type exit to leave it.
+To stop a running container, first find its ID or name using docker ps, then run:
+docker stop CONTAINER_ID
+To remove a stopped container:
+docker rm CONTAINER_ID
+To remove the hello-world image after removing any container that uses it:
+docker rmi hello-world
+Expected output: docker run hello-world displays "Hello from Docker!"
+Result: Basic Docker commands were executed successfully.
+Experiment 18 -- Run a Containerized Application Using Docker
+Aim: To create a simple HTML application, build a Docker image and run it in a container.
+Step 1: Create a project folder
+mkdir DockerApp
+cd DockerApp
+Step 2: Create the HTML file
+notepad index.html
+Paste and save:
+<html>
+<head>
+    <title>Docker Application</title>
+</head>
+<body>
+    <h1>Hello from Docker Container!</h1>
+    <p>My first containerized application.</p>
+</body>
+</html>
+Step 3: Create a Dockerfile
+notepad Dockerfile
+Paste and save this file with the exact name Dockerfile (no .txt extension):
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+Step 4: Build the image
+docker build -t myapp .
+Step 5: Check the image
+docker images
+Step 6: Run the container
+docker run -d -p 8080:80 --name mycontainer myapp
+Step 7: Check the running container
+docker ps
+Step 8: View the application
+Open a browser and visit:
+http://localhost:8080
+The page should display Hello from Docker Container!
+Step 9: Stop and remove the container
+docker stop mycontainer
+docker rm mycontainer
+Result: The HTML application was built into a Docker image and accessed through a running container.
+Experiment 19 -- Execute a Python Program Using Docker
+Aim: To create and execute a Python program using Docker.
+Step 1: Start Docker Desktop
+Wait until Docker Engine shows Running.
+Step 2: Create a folder and enter it
+mkdir PythonDocker
+cd PythonDocker
+Step 3: Create the Python file
+notepad hello.py
+Paste and save:
+print("Hello World")
+print("Python program executed successfully")
+Step 4: Run the Python program inside Docker
+Run this command in the same folder:
+docker run --rm -v "%cd%:/app" -w /app python:3.12 python hello.py
+Expected output:
+Hello World
+Python program executed successfully
+Result: The Python program was successfully executed using Docker.
+Note: No separate Dockerfile is required for this method. The python:3.12 image supplies Python inside the container.
+Experiment 20 -- Execute a Java Program Using Docker
+Aim: To create and execute a Java program using Docker.
+Step 1: Create a folder
+mkdir JavaDocker
+cd JavaDocker
+Step 2: Create the Java file
+notepad Hello.java
+Paste and save:
+class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+        System.out.println("Java program executed using Docker");
+    }
+}
+Step 3: Run the Java program using Docker
+docker run --rm -v "%cd%:/app" -w /app eclipse-temurin:21-jdk java Hello.java
+Expected output:
+Hello World
+Java program executed using Docker
+Result: The Java program was successfully executed using Docker.
+Note: This uses Java's source-file launch feature. A separate Dockerfile is not required.
+Experiment 21 -- Execute a Java Program Using a Parameterized Constructor in Docker
+Aim: To demonstrate a parameterized constructor in Java and execute the program using Docker.
+Step 1: Create a folder
+mkdir Exp21
+cd Exp21
+Step 2: Create the Java file
+notepad Student.java
+Paste and save:
+class Student {
+    int id;
+    String name;
+
+    Student(int i, String n) {
+        id = i;
+        name = n;
+    }
+
+    void display() {
+        System.out.println("ID: " + id);
+        System.out.println("Name: " + name);
+    }
+
+    public static void main(String[] args) {
+        Student s = new Student(101, "Rahul");
+        s.display();
+    }
+}
+Step 3: Compile and run using Docker
+docker run --rm -v "%cd%:/app" -w /app eclipse-temurin:21-jdk sh -c "javac Student.java && java Student"
+Expected output:
+ID: 101
+Name: Rahul
+Result: The Java program using a parameterized constructor was successfully executed using Docker.
+Experiment 22 -- Execute a Palindrome Java Program Using Docker
+Aim: To check whether a number is a palindrome using Java and Docker.
+Step 1: Create a folder
+mkdir Exp22
+cd Exp22
+Step 2: Create the Java file
+notepad Palindrome.java
+Paste and save:
+class Palindrome {
+    public static void main(String[] args) {
+        int n = 121;
+        int temp = n;
+        int rev = 0;
+
+        while (n > 0) {
+            int r = n % 10;
+            rev = rev * 10 + r;
+            n = n / 10;
+        }
+
+        if (temp == rev)
+            System.out.println("Palindrome");
+        else
+            System.out.println("Not Palindrome");
+    }
+}
+Step 3: Compile and run using Docker
+docker run --rm -v "%cd%:/app" -w /app eclipse-temurin:21-jdk sh -c "javac Palindrome.java && java Palindrome"
+Expected output:
+Palindrome
+Result: The palindrome Java program was successfully executed using Docker.
+Experiment 23 -- Execute a Single Inheritance Java Program Using Docker
+Aim: To demonstrate single inheritance using Java and Docker.
+Step 1: Create a folder
+mkdir Exp23
+cd Exp23
+Step 2: Create the Java file
+notepad Inheritance.java
+Paste and save:
+class Animal {
+    void eat() {
+        System.out.println("Animal is eating");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Dog is barking");
+    }
+}
+
+class Inheritance {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();
+        d.bark();
+    }
+}
+Step 3: Compile and run using Docker
+docker run --rm -v "%cd%:/app" -w /app eclipse-temurin:21-jdk sh -c "javac Inheritance.java && java Inheritance"
+Expected output:
+Animal is eating
+Dog is barking
+Result: Single inheritance was demonstrated successfully using Docker.
+Experiment 24 -- Integrate Kubernetes with Docker
+Aim: To enable Kubernetes in Docker Desktop and check the Kubernetes cluster.
+Step 1: Start Docker Desktop
+Wait until Docker Engine shows Running.
+Step 2: Enable Kubernetes
+Open Docker Desktop.
+Open Settings.
+Select Kubernetes.
+Enable Kubernetes.
+Select Apply & Restart.
+Wait until Kubernetes shows that the cluster is running/ready.
+Step 3: Open Command Prompt and check Docker
+docker --version
+Step 4: Check kubectl
+kubectl version --client
+Step 5: Check Kubernetes nodes
+kubectl get nodes
+Expected output: A node such as docker-desktop should show status Ready.
+Step 6: Display cluster information
+kubectl cluster-info
+Result: Kubernetes was enabled in Docker Desktop and the cluster information was displayed.
+Note: If Kubernetes is not available in your Docker Desktop version, install and configure a Kubernetes environment such as Minikube instead. Do not continue until kubectl get nodes shows a ready node.
+Experiment 25 -- Deploy and Manage a Containerized Application Using Kubernetes
+Aim: To deploy and access a containerized application using Kubernetes.
+Step 1: Start Docker Desktop
+Make sure Docker Engine and Kubernetes are running.
+Step 2: Create a deployment
+Open Command Prompt:
+kubectl create deployment myapp --image=nginx
+Step 3: Check the deployment
+kubectl get deployments
+Step 4: Check pods
+kubectl get pods
+Wait until the pod status becomes Running.
+Step 5: Expose the application
+kubectl expose deployment myapp --type=ClusterIP --port=80
+Step 6: Check the service
+kubectl get services
+Step 7: Forward a local port to the application
+kubectl port-forward service/myapp 8080:80
+Keep this Command Prompt window open while testing.
+Step 8: Open the application
+Open a browser and visit:
+http://localhost:8080
+The Nginx welcome page should appear.
+Step 9: Stop port forwarding
+Press Ctrl + C in the Command Prompt window running port-forward.
+Step 10: Delete the service and deployment
+kubectl delete service myapp
+kubectl delete deployment myapp
+Result: The Nginx application was deployed and accessed using Kubernetes.
+Experiment 26 -- Install Selenium WebDriver
+Aim: To install Selenium WebDriver using Node.js and npm.
+Step 1: Check Node.js
+Open Command Prompt:
+node -v
+Step 2: Check npm
+npm -v
+If these commands are not recognized, install the LTS version of Node.js from:
+https://nodejs.org/
+Close and reopen Command Prompt after installation.
+Step 3: Create a project folder
+mkdir SeleniumProject
+cd SeleniumProject
+Step 4: Initialize the project
+npm init -y
+This creates package.json.
+Step 5: Install Selenium WebDriver
+npm install selenium-webdriver
+Step 6: Check installation
+npm list selenium-webdriver
+Expected output: The installed selenium-webdriver package and its version are displayed.
+Result: Selenium WebDriver was successfully installed using npm.
+Experiment 27 -- Execute a JavaScript Selenium Test
+Aim: To automate a browser using Selenium WebDriver and JavaScript.
+Step 1: Create a project folder
+mkdir Exp27
+cd Exp27
+Step 2: Initialize Node.js
+npm init -y
+Step 3: Install Selenium
+npm install selenium-webdriver
+Step 4: Make sure Google Chrome is installed
+Install Google Chrome if it is not already installed. Selenium Manager normally obtains the required Chrome driver automatically when the test runs.
+Step 5: Create the JavaScript file
+notepad test.js
+Paste and save:
+const { Builder } = require('selenium-webdriver');
+
+async function test() {
+    let driver = await new Builder().forBrowser('chrome').build();
+
+    try {
+        await driver.get('https://www.google.com');
+        let title = await driver.getTitle();
+        console.log("Page Title: " + title);
+    } finally {
+        await driver.quit();
+    }
+}
+
+test().catch(console.error);
+Step 6: Run the test
+node test.js
+Expected output:
+Page Title: Google
+Chrome should open Google, read the page title, and close.
+Result: A JavaScript Selenium test was successfully executed.
+Experiment 28 -- Test a Containerized Application Using Selenium
+Aim: To test a web application running inside a Docker container using Selenium and JavaScript.
+Step 1: Start Docker Desktop
+Wait until Docker Engine shows Running.
+Step 2: Create a project folder
+mkdir Exp28
+cd Exp28
+Step 3: Create an HTML file
+notepad index.html
+Paste and save:
+<html>
+<head>
+    <title>Docker App</title>
+</head>
+<body>
+    <h1 id="message">Hello Docker</h1>
+</body>
+</html>
+Step 4: Run the HTML application in an Nginx container
+Run this command from the Exp28 folder:
+docker run -d --name testapp -p 8080:80 -v "%cd%:/usr/share/nginx/html:ro" nginx
+Step 5: Check the container
+docker ps
+Step 6: Check the application
+Open a browser and visit:
+http://localhost:8080
+The page should show Hello Docker.
+Step 7: Initialize Node.js
+Open a second Command Prompt window. Move into the same Exp28 folder, using its actual path, and run:
+npm init -y
+Step 8: Install Selenium
+npm install selenium-webdriver
+Make sure Google Chrome is installed.
+Step 9: Create the Selenium test file
+notepad test.js
+Paste and save:
+const { Builder, By } = require('selenium-webdriver');
+
+async function test() {
+    let driver = await new Builder().forBrowser('chrome').build();
+
+    try {
+        await driver.get('http://localhost:8080');
+
+        let title = await driver.getTitle();
+        let message = await driver.findElement(By.id('message')).getText();
+
+        console.log("Title: " + title);
+        console.log("Message: " + message);
+    } finally {
+        await driver.quit();
+    }
+}
+
+test().catch(console.error);
+Step 10: Run the Selenium test
+node test.js
+Expected output:
+Title: Docker App
+Message: Hello Docker
+Step 11: Stop and remove the Docker container
+docker stop testapp
+docker rm testapp
+Result: The containerized HTML application was successfully tested using Selenium WebDriver and JavaScript.
+Quick revision -- Important commands
+Command                            Purpose
+docker --version                 Check Docker version docker pull                      Download an image docker images                    List images docker run                       Create and start a container docker ps                        List running containers docker ps -a                     List all containers docker stop                      Stop a container docker rm                        Remove a container docker build                     Build an image from a Dockerfile kubectl get nodes                List Kubernetes nodes kubectl get pods                 List Kubernetes pods kubectl get deployments          List deployments kubectl get services             List services npm init -y                      Initialize a Node.js project npm install selenium-webdriver   Install Selenium WebDriver node test.js                     Run a JavaScript file
+Important practical reminders
+For Experiments 19--23, create the file in the folder you are currently working in, then run the Docker command from that same folder.
+For Java Experiments 21--23, the command compiles the .java file and then runs the class.
+For Experiment 24, Kubernetes must be enabled and ready before checking nodes.
+For Experiment 25, keep the kubectl port-forward command running while opening the browser.
+For Experiments 27--28, Chrome and Node.js must be installed on the host computer.
+For Experiment 28, use a second Command Prompt window for the Selenium commands so the Docker container can keep running.
+End of Experiments 17--28.
